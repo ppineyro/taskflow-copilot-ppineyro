@@ -111,6 +111,17 @@ public class TaskService {
                 .toList();
     }
 
+    /**
+     * Tareas vencidas de todos los proyectos (GET /tasks/overdue, S6 Día 2). La regla es la del
+     * dominio, Task.estaVencida(); el orden, TaskOrders.POR_FECHA: la más vencida primero.
+     */
+    public List<Task> vencidas() {
+        return repository.findAll().stream()
+                .filter(Task::estaVencida)
+                .sorted(TaskOrders.POR_FECHA)
+                .toList();
+    }
+
     /** Busca una tarea por id: delega en el repositorio y deja subir el Optional TAL CUAL. */
     public Optional<Task> buscarPorId(Long id) {
         return repository.findById(id);

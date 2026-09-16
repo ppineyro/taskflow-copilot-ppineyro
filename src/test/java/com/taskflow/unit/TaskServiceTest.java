@@ -17,6 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -154,6 +156,46 @@ class TaskServiceTest {
             assertThrows(TaskNotFoundException.class, () -> service.eliminar(999L));
             // never() + anyLong(): NO se borró nada. (Regla "todos matchers o ninguno": aquí anyLong()).
             verify(repository, never()).deleteById(anyLong());
+        }
+    }
+
+    // ==================== S6 Día 2: listado de vencidas ====================
+
+    private static final LocalDate HOY = LocalDate.now();
+
+    @Nested
+    @DisplayName("vencidas")
+    class Vencidas {
+
+        @Test
+        void vencidas_devuelveSoloLasVencidasNoDone_laMasVencidaPrimero() {
+            Task hace1 = tareaCon(1L, TaskStatus.IN_PROGRESS, 5L, HOY.minusDays(1));
+            Task en3 = tareaCon(2L, TaskStatus.TODO, 5L, HOY.plusDays(3));
+            Task doneHace10 = tareaCon(3L, TaskStatus.DONE, 5L, HOY.minusDays(10));
+            Task sinFecha = tareaCon(4L, TaskStatus.TODO, 5L, null);
+            Task hace5 = tareaCon(5L, TaskStatus.TODO, 5L, HOY.minusDays(5));
+            when(repository.findAll()).thenReturn(List.of(hace1, en3, doneHace10, sinFecha, hace5));
+
+            List<Long> ids = service.vencidas().stream().map(Task::getId).toList();
+
+            // El repositorio las entrega como 1, 5: sin el .sorted(TaskOrders.POR_FECHA) este assert falla.
+            assertEquals(List.of(5L, 1L), ids);
+        }
+
+        @Test
+        void vencidas_sinNingunaVencida_devuelveListaVacia() {
+            when(repository.findAll()).thenReturn(List.of(tareaCon(1L, TaskStatus.TODO, 5L, HOY.plusDays(1))));
+
+            assertEquals(List.of(), service.vencidas());
+        }
+    }
+
+    /** Fabrica una Task REAL con estado, responsable y fecha a elección (null = sin responsable / sin fecha). */
+    private Task tareaCon(Long id, TaskStatus status, Long assigneeId, LocalDate dueDate) {
+        try {
+            return new Task(id, "Tarea " + id, "desc", status, Priority.MED, PROYECTO, assigneeId, dueDate);
+        } catch (TaskValidationException e) {
+            throw new IllegalStateException("dato de prueba inválido", e);
         }
     }
 
