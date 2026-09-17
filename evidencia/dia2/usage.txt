@@ -1,0 +1,3 @@
+"PR: $((git remote get-url origin) -replace '\.git$','')/pull/$n" | Tee-Object evidencia\dia2\pr.txt
+--- al empezar el dia (MP-2) ---
+Select-String -Path $HOME\usage-dia2-inicio.txt -Pattern '\d+ / [\d,]+ AIC'

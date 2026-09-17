@@ -1,0 +1,62 @@
+ specs/overdue.md                                   | 42 ++++++++++++++++++++++
+ .../com/taskflow/controller/TaskController.java    |  8 +++++
+ .../java/com/taskflow/service/TaskService.java     | 11 ++++++
+ .../com/taskflow/slice/TaskControllerTest.java     | 25 +++++++++++++
+ .../java/com/taskflow/unit/TaskServiceTest.java    | 42 ++++++++++++++++++++++
+ 5 files changed, 128 insertions(+)
+25	0	src/test/java/com/taskflow/slice/TaskControllerTest.java
+42	0	src/test/java/com/taskflow/unit/TaskServiceTest.java
+
++    /** GET /tasks/overdue ΓÇö tareas vencidas de todos los proyectos, la m├ís vencida primero (S6 D├¡a 2). */
++    /**
++     * Tareas vencidas de todos los proyectos (GET /tasks/overdue, S6 D├¡a 2). La regla es la del
++     * dominio, Task.estaVencida(); el orden, TaskOrders.POR_FECHA: la m├ís vencida primero.
++     */
++    // ==================== S6 D├¡a 2: listado nuevo ====================
++    // La lista la fija el mock: aqu├¡ se prueba que la RUTA llega al m├⌐todo nuevo (200, no el 400 de
++    // /tasks/{id}) y que el JSON trae los campos del TaskResponse. El orden se prueba en TaskServiceTest.
++    // ==================== S6 D├¡a 2: listado de vencidas ====================
++            // El repositorio las entrega como 1, 5: sin el .sorted(TaskOrders.POR_FECHA) este assert falla.
++    /** Fabrica una Task REAL con estado, responsable y fecha a elecci├│n (null = sin responsable / sin fecha). */
+
+MUTANTE: quitado .sorted(TaskOrders.POR_FECHA) de vencidas()
+
+[ERROR] Tests run: 9, Failures: 1, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
+RESTAURADO: TaskService.java quedó exactamente como estaba.
+
+
++            description = "Tareas con fecha pasada que no est├ín DONE (Task.estaVencida()), por dueDate ascendente.")
++     * dominio, Task.estaVencida(); el orden, TaskOrders.POR_FECHA: la m├ís vencida primero.
++                .filter(Task::estaVencida)
++                .sorted(TaskOrders.POR_FECHA)
+
+
++            description = "Tareas con fecha pasada que no est├ín DONE (Task.estaVencida()), por dueDate ascendente.")
++     * dominio, Task.estaVencida(); el orden, TaskOrders.POR_FECHA: la m├ís vencida primero.
++                .filter(Task::estaVencida)
++                .sorted(TaskOrders.POR_FECHA)
+
+
+[INFO] Tests run: 70, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+
+25	0	src/test/java/com/taskflow/slice/TaskControllerTest.java
+42	0	src/test/java/com/taskflow/unit/TaskServiceTest.java
+
++    /** GET /tasks/overdue ΓÇö tareas vencidas de todos los proyectos, la m├ís vencida primero (S6 D├¡a 2). */
++    /**
++     * Tareas vencidas de todos los proyectos (GET /tasks/overdue, S6 D├¡a 2). La regla es la del
++     * dominio, Task.estaVencida(); el orden, TaskOrders.POR_FECHA: la m├ís vencida primero.
++     */
++    // ==================== S6 D├¡a 2: listado nuevo ====================
++    // La lista la fija el mock: aqu├¡ se prueba que la RUTA llega al m├⌐todo nuevo (200, no el 400 de
++    // /tasks/{id}) y que el JSON trae los campos del TaskResponse. El orden se prueba en TaskServiceTest.
++    // ==================== S6 D├¡a 2: listado de vencidas ====================
++            // El repositorio las entrega como 1, 5: sin el .sorted(TaskOrders.POR_FECHA) este assert falla.
++    /** Fabrica una Task REAL con estado, responsable y fecha a elecci├│n (null = sin responsable / sin fecha). */
+
+
+[INFO] Tests run: 70, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+
