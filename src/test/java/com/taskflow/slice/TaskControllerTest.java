@@ -97,13 +97,16 @@ class TaskControllerTest {
     @Test
     void getOverdue_retorna200ConLasTareasDelServicio() throws Exception {
         when(taskService.vencidas()).thenReturn(List.of(
+                tareaConFecha(8L, "Revisar dependencias", 2L, LocalDate.now().minusDays(3)),
                 tareaConFecha(7L, "Corregir bug de fechas", 2L, LocalDate.now().minusDays(1))));
 
         mockMvc.perform(get("/tasks/overdue"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].id").value(7))
-                .andExpect(jsonPath("$[0].title").value("Corregir bug de fechas"));
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(8))
+                .andExpect(jsonPath("$[1].id").value(7))
+                .andExpect(jsonPath("$[0].title").value("Revisar dependencias"))
+                .andExpect(jsonPath("$[1].title").value("Corregir bug de fechas"));
     }
 
     @Test

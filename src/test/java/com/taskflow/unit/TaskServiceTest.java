@@ -197,15 +197,16 @@ class TaskServiceTest {
         @Test
         void sinResponsable_devuelveSoloSinResponsable_enOrdenPorFecha() {
             Task conFecha10 = tareaCon(10L, TaskStatus.TODO, null, HOY.plusDays(10));
+            Task doneSinResponsable = tareaCon(14L, TaskStatus.DONE, null, HOY.plusDays(5));
             Task conResponsable = tarea(11L, "Con responsable", 3L);
             Task sinFecha = tarea(12L, "Sin fecha", null);
             Task conFecha2 = tareaCon(13L, TaskStatus.TODO, null, HOY.plusDays(2));
             // repository devuelve en este orden explícito
-            when(repository.findAll()).thenReturn(List.of(conFecha10, conResponsable, sinFecha, conFecha2));
+            when(repository.findAll()).thenReturn(List.of(conFecha10, doneSinResponsable, conResponsable, sinFecha, conFecha2));
 
             List<Long> ids = service.sinResponsable().stream().map(Task::getId).toList();
 
-            assertEquals(List.of(13L, 10L, 12L), ids);
+            assertEquals(List.of(13L, 14L, 10L, 12L), ids);
         }
 
         @Test
