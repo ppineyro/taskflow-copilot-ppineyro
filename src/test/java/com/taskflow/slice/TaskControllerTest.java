@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.matchesPattern;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -192,6 +193,18 @@ class TaskControllerTest {
         mockMvc.perform(delete("/tasks/999"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404));
+    }
+
+    @Test
+    void getUnassigned_retorna200YJsonConAssigneeNull() throws Exception {
+        when(taskService.sinResponsable()).thenReturn(List.of(
+                tareaConFecha(4L, "Escribir tests MockMvc", null, LocalDate.now().plusDays(7))));
+
+        mockMvc.perform(get("/tasks/unassigned"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].id").value(4))
+                .andExpect(jsonPath("$[0].assigneeId").value(nullValue()));
     }
 
     // ---- helpers de datos (reales, no mocks) ----

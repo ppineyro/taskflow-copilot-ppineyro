@@ -190,6 +190,32 @@ class TaskServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("SinResponsable")
+    class SinResponsable {
+
+        @Test
+        void sinResponsable_devuelveSoloSinResponsable_enOrdenPorFecha() {
+            Task conFecha10 = tareaCon(10L, TaskStatus.TODO, null, HOY.plusDays(10));
+            Task conResponsable = tarea(11L, "Con responsable", 3L);
+            Task sinFecha = tarea(12L, "Sin fecha", null);
+            Task conFecha2 = tareaCon(13L, TaskStatus.TODO, null, HOY.plusDays(2));
+            // repository devuelve en este orden explícito
+            when(repository.findAll()).thenReturn(List.of(conFecha10, conResponsable, sinFecha, conFecha2));
+
+            List<Long> ids = service.sinResponsable().stream().map(Task::getId).toList();
+
+            assertEquals(List.of(13L, 10L, 12L), ids);
+        }
+
+        @Test
+        void sinResponsable_soloConResponsable_devuelveVacio() {
+            when(repository.findAll()).thenReturn(List.of(tarea(20L, "Con responsable 20", 2L), tarea(21L, "Con responsable 21", 3L)));
+
+            assertEquals(List.of(), service.sinResponsable());
+        }
+    }
+
     /** Fabrica una Task REAL con estado, responsable y fecha a elección (null = sin responsable / sin fecha). */
     private Task tareaCon(Long id, TaskStatus status, Long assigneeId, LocalDate dueDate) {
         try {

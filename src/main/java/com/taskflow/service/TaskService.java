@@ -122,6 +122,14 @@ public class TaskService {
                 .toList();
     }
 
+    /** Lista las tareas que están sin responsable (predicate nombrado en ReportService). */
+    public List<Task> sinResponsable() {
+        return repository.findAll().stream()
+                .filter(ReportService.SIN_ASIGNAR)
+                .sorted(TaskOrders.POR_FECHA)
+                .toList();
+    }
+
     /** Busca una tarea por id: delega en el repositorio y deja subir el Optional TAL CUAL. */
     public Optional<Task> buscarPorId(Long id) {
         return repository.findById(id);
