@@ -1,0 +1,4 @@
+tareas vencidas (REST):          1 -> 7
+issues creados (transcript):     1
+issues 'Tarea vencida' (GitHub): NO LEÍDO
+issues 'Limpieza urgente':       NO LEÍDO
