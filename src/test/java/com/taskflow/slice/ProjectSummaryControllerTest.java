@@ -60,4 +60,21 @@ class ProjectSummaryControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404));
     }
+
+    @Test
+    void getResumen_proyectoSinTareas_devuelveCeros() throws Exception {
+        when(projectService.buscarPorId(3L)).thenReturn(Optional.of(new Project(3L, "Migración Legacy", "d", 1L, null)));
+        when(projectService.resumen(any(Project.class))).thenReturn(new com.taskflow.service.ProjectSummary(0,
+                Map.of(TaskStatus.TODO, 0, TaskStatus.IN_PROGRESS, 0, TaskStatus.DONE, 0), 0));
+
+        mockMvc.perform(get("/projects/3/summary"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.projectId").value(3))
+                .andExpect(jsonPath("$.projectName").value("Migración Legacy"))
+                .andExpect(jsonPath("$.totalTasks").value(0))
+                .andExpect(jsonPath("$.byStatus.TODO").value(0))
+                .andExpect(jsonPath("$.byStatus.IN_PROGRESS").value(0))
+                .andExpect(jsonPath("$.byStatus.DONE").value(0))
+                .andExpect(jsonPath("$.overdue").value(0));
+    }
 }
