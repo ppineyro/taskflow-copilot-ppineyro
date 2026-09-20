@@ -140,6 +140,7 @@ public class ProjectController {
     public ProjectSummaryResponse getResumen(@PathVariable("id") Long id) {
         Project proyecto = projectService.buscarPorId(id)
                 .orElseThrow(() -> new ProjectNotFoundException(id));
-        return projectService.resumen(proyecto);
+        com.taskflow.service.ProjectSummary summary = projectService.resumen(proyecto);
+        return ProjectMapper.aResumen(proyecto, summary);
     }
 }

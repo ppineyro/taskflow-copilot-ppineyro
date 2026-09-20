@@ -43,10 +43,10 @@ class ProjectServiceTest {
     @Test
     void resumen_conTareas_calculaConteosYVencidas() throws Exception {
         Project proyecto = new Project(2L, "App Móvil", "d", 2L, null);
-        Task t1 = tarea(3L, "A", TaskStatus.TODO, Priority.MED, null, null);
-        Task t2 = tarea(4L, "B", TaskStatus.IN_PROGRESS, Priority.HIGH, null, LocalDate.now().plusDays(5));
-        Task t3 = tarea(5L, "C", TaskStatus.IN_PROGRESS, Priority.LOW, null, LocalDate.now().minusDays(1)); // vencida
-        Task t4 = tarea(6L, "D", TaskStatus.DONE, Priority.MED, null, LocalDate.now().minusDays(2));
+        Task t1 = tarea(3L, "Tarea 3", TaskStatus.TODO, Priority.MED, null, null);
+        Task t2 = tarea(4L, "Tarea 4", TaskStatus.IN_PROGRESS, Priority.HIGH, null, LocalDate.now().plusDays(5));
+        Task t3 = tarea(5L, "Tarea 5", TaskStatus.IN_PROGRESS, Priority.LOW, null, LocalDate.now().minusDays(1)); // vencida
+        Task t4 = tarea(6L, "Tarea 6", TaskStatus.DONE, Priority.MED, null, LocalDate.now().minusDays(2));
 
         when(taskRepository.findByProjectId(2L)).thenReturn(List.of(t1, t2, t3, t4));
 

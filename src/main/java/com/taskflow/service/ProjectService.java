@@ -111,14 +111,14 @@ public class ProjectService {
      * Resumen de un proyecto que ya existe (el 404 lo resuelve el controller): cuántas tareas tiene en cada
      * estado y cuántas están vencidas. Vencida = Task.estaVencida(); la regla no se reescribe aquí.
      */
-    public ProjectSummaryResponse resumen(Project proyecto) {
+    public com.taskflow.service.ProjectSummary resumen(Project proyecto) {
         List<Task> tareas = taskRepository.findByProjectId(proyecto.getId());
-        Map<TaskStatus, Long> porEstado = new EnumMap<>(TaskStatus.class);
+        Map<TaskStatus, Integer> porEstado = new EnumMap<>(TaskStatus.class);
         for (TaskStatus estado : TaskStatus.values()) {
-            porEstado.put(estado, 0L);                      // las tres claves siempre, aunque valgan 0
+            porEstado.put(estado, 0);                      // las tres claves siempre, aunque valgan 0
         }
-        tareas.forEach(t -> porEstado.merge(t.getStatus(), 1L, Long::sum));
-        long vencidas = tareas.stream().filter(Task::estaVencida).count();
-        return ProjectMapper.aResumen(proyecto, tareas.size(), porEstado, vencidas);
+        tareas.forEach(t -> porEstado.merge(t.getStatus(), 1, Integer::sum));
+        int vencidas = (int) tareas.stream().filter(Task::estaVencida).count();
+        return new com.taskflow.service.ProjectSummary(tareas.size(), porEstado, vencidas);
     }
 }

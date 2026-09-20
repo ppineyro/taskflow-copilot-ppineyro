@@ -51,8 +51,7 @@ class ProjectSummaryServiceTest {
                 tarea(9L, TaskStatus.IN_PROGRESS, null)));        // sin fecha: NO vence
 
         // Contado a mano: TODO 1, IN_PROGRESS 2, DONE 1; vencida solo la 7 (igual que el proyecto 2 de la semilla)
-        assertEquals(new ProjectSummaryResponse(2L, "App Móvil", 4,
-                        Map.of(TaskStatus.TODO, 1L, TaskStatus.IN_PROGRESS, 2L, TaskStatus.DONE, 1L), 1),
+        assertEquals(new com.taskflow.service.ProjectSummary(4, Map.of(TaskStatus.TODO, 1, TaskStatus.IN_PROGRESS, 2, TaskStatus.DONE, 1), 1),
                 service.resumen(appMovil));
     }
 
@@ -61,8 +60,7 @@ class ProjectSummaryServiceTest {
         Project legacy = new Project(3L, "Migración Legacy", "d", 1L, null);
         when(taskRepository.findByProjectId(3L)).thenReturn(List.of());
 
-        assertEquals(new ProjectSummaryResponse(3L, "Migración Legacy", 0,
-                        Map.of(TaskStatus.TODO, 0L, TaskStatus.IN_PROGRESS, 0L, TaskStatus.DONE, 0L), 0),
+        assertEquals(new com.taskflow.service.ProjectSummary(0, Map.of(TaskStatus.TODO, 0, TaskStatus.IN_PROGRESS, 0, TaskStatus.DONE, 0), 0),
                 service.resumen(legacy));
     }
 

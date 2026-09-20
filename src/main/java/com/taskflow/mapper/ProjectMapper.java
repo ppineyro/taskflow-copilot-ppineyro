@@ -5,6 +5,7 @@ import com.taskflow.dto.ProjectSummaryResponse;
 import com.taskflow.model.Project;
 import com.taskflow.model.TaskStatus;
 
+import java.util.EnumMap;
 import java.util.Map;
 
 /**
@@ -31,5 +32,15 @@ public final class ProjectMapper {
     public static ProjectSummaryResponse aResumen(Project p, long totalTasks, Map<TaskStatus, Long> byStatus,
                                                   long overdue) {
         return new ProjectSummaryResponse(p.getId(), p.getName(), totalTasks, byStatus, overdue);
+    }
+
+    /** Sobrecarga: acepta el valor de servicio ProjectSummary y convierte los tipos (Integer -> Long). */
+    public static ProjectSummaryResponse aResumen(Project p, com.taskflow.service.ProjectSummary summary) {
+        Map<TaskStatus, Long> byStatusLong = new EnumMap<>(TaskStatus.class);
+        for (TaskStatus estado : TaskStatus.values()) {
+            Integer v = summary.byStatus().get(estado);
+            byStatusLong.put(estado, v == null ? 0L : v.longValue());
+        }
+        return new ProjectSummaryResponse(p.getId(), p.getName(), summary.totalTasks(), byStatusLong, summary.overdue());
     }
 }

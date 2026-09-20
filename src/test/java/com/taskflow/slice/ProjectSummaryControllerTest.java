@@ -1,7 +1,6 @@
 package com.taskflow.slice;
 
 import com.taskflow.controller.ProjectController;
-import com.taskflow.dto.ProjectSummaryResponse;
 import com.taskflow.model.Project;
 import com.taskflow.model.TaskStatus;
 import com.taskflow.security.JwtAuthenticationFilter;
@@ -39,8 +38,8 @@ class ProjectSummaryControllerTest {
     @Test
     void getResumen_existente_devuelve200ConCadaCampo() throws Exception {
         when(projectService.buscarPorId(2L)).thenReturn(Optional.of(new Project(2L, "App Móvil", "d", 2L, null)));
-        when(projectService.resumen(any(Project.class))).thenReturn(new ProjectSummaryResponse(2L, "App Móvil", 4,
-                Map.of(TaskStatus.TODO, 1L, TaskStatus.IN_PROGRESS, 2L, TaskStatus.DONE, 1L), 1));
+        when(projectService.resumen(any(Project.class))).thenReturn(new com.taskflow.service.ProjectSummary(4,
+                Map.of(TaskStatus.TODO, 1, TaskStatus.IN_PROGRESS, 2, TaskStatus.DONE, 1), 1));
 
         mockMvc.perform(get("/projects/2/summary"))
                 .andExpect(status().isOk())
