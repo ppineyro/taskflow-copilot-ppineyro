@@ -2,6 +2,7 @@ package com.taskflow.controller;
 
 import com.taskflow.dto.ProjectRequest;
 import com.taskflow.dto.ProjectResponse;
+import com.taskflow.dto.ProjectSummaryResponse;
 import com.taskflow.dto.TaskResponse;
 import com.taskflow.exception.ProjectNotFoundException;
 import com.taskflow.mapper.ProjectMapper;
@@ -130,5 +131,16 @@ public class ProjectController {
     public ResponseEntity<Void> deleteProject(@PathVariable("id") Long id) {
         projectService.eliminar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /** GET /projects/{id}/summary — 200 con el resumen; 404 uniforme si el proyecto no existe. */
+    @Operation(summary = "Resumen de un proyecto",
+            description = "Tareas por estado (siempre TODO, IN_PROGRESS y DONE) y cuántas están vencidas. 404 si el proyecto no existe.")
+    @GetMapping("/projects/{id}/summary")
+    public ProjectSummaryResponse getResumen(@PathVariable("id") Long id) {
+        Project proyecto = projectService.buscarPorId(id)
+                .orElseThrow(() -> new ProjectNotFoundException(id));
+        com.taskflow.service.ProjectSummary summary = projectService.resumen(proyecto);
+        return ProjectMapper.aResumen(proyecto, summary);
     }
 }
