@@ -1,7 +1,12 @@
 package com.taskflow.mapper;
 
 import com.taskflow.dto.ProjectResponse;
+import com.taskflow.dto.ProjectSummaryResponse;
 import com.taskflow.model.Project;
+import com.taskflow.model.TaskStatus;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * ProjectMapper — puente DTO &lt;-&gt; dominio del lado Project. Estático, a mano, sin MapStruct.
@@ -21,5 +26,21 @@ public final class ProjectMapper {
     public static ProjectResponse aResponse(Project p) {
         return new ProjectResponse(p.getId(), p.getName(), p.getDescription(),
                 p.getOwnerId(), p.getCreatedAt());
+    }
+
+    /** Proyecto + conteos ya calculados por el service -> DTO de salida de GET /projects/{id}/summary. */
+    public static ProjectSummaryResponse aResumen(Project p, long totalTasks, Map<TaskStatus, Long> byStatus,
+                                                  long overdue) {
+        return new ProjectSummaryResponse(p.getId(), p.getName(), totalTasks, byStatus, overdue);
+    }
+
+    /** Sobrecarga: acepta el valor de servicio ProjectSummary y convierte los tipos (Integer -> Long). */
+    public static ProjectSummaryResponse aResumen(Project p, com.taskflow.service.ProjectSummary summary) {
+        Map<TaskStatus, Long> byStatusLong = new EnumMap<>(TaskStatus.class);
+        for (TaskStatus estado : TaskStatus.values()) {
+            Integer v = summary.byStatus().get(estado);
+            byStatusLong.put(estado, v == null ? 0L : v.longValue());
+        }
+        return new ProjectSummaryResponse(p.getId(), p.getName(), summary.totalTasks(), byStatusLong, summary.overdue());
     }
 }

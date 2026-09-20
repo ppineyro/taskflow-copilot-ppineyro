@@ -167,7 +167,8 @@
         <profile>
             <id>cobertura</id>
             <activation>
-                <property><name>!m2e.version</name></property>
+                <!-- Activar explícitamente con -Dcoverage=true para que JaCoCo se ejecute solo cuando se pida. -->
+                <property><name>coverage</name></property>
             </activation>
             <build>
                 <plugins>
